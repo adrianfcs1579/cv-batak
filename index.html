@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>(Adrian Franciscus Caferius Sidauruk) | Portfolio Desain Web</title>
+  <meta name="description" content="Portfolio (Adrian Franciscus Caferius Sidauruk), mahasiswa Fakultas Teknologi dan Informatika - UTS Desain Web.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* ============================================================
+       UTS DESAIN WEB - PORTFOLIO
+       Konsep: setiap bagian web tampil sebagai "jendela browser".
+       HTML & CSS native, tanpa framework, tanpa JavaScript.
+       ============================================================ */
+
+    :root {
+      --biru: #2b2fd9;
+      --biru-tua: #1a1d8c;
+      --lilac: #e7e5ff;
+      --kertas: #f6f5ff;
+      --lemon: #f5e663;
+      --merah: #ff5f57;
+      --kuning: #febc2e;
+      --hijau: #28c840;
+      --tinta: #15163d;
+      --putih: #ffffff;
+
+      --font-judul: "Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;
+      --font-isi: "Instrument Sans", "Segoe UI", system-ui, sans-serif;
+
+      --garis: 2.5px solid var(--tinta);
+      --bayangan: 6px 6px 0 var(--tinta);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; scroll-padding-top: 5.5rem; }
+
+    body {
+      font-family: var(--font-isi);
+      font-size: 1.05rem;
+      line-height: 1.65;
+      color: var(--tinta);
+      background-color: var(--kertas);
+      background-image:
+        linear-gradient(var(--lilac) 1px, transparent 1px),
+        linear-gradient(90deg, var(--lilac) 1px, transparent 1px);
+      background-size: 32px 32px;
+    }
+
+    img, svg { max-width: 100%; display: block; }
+    a { color: inherit; }
+    ul { list-style: none; }
+
+    :focus-visible {
+      outline: 3px solid var(--biru);
+      outline-offset: 3px;
+    }
+
+    h1, h2, h3 {
+      font-family: var(--font-judul);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+    }
+
+    /* ---------- Navigasi ---------- */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--biru);
+      border-bottom: var(--garis);
+    }
+
+    .navbar-isi {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0.8rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .logo {
+      font-family: var(--font-judul);
+      font-weight: 800;
+      font-size: 1.3rem;
+      color: var(--lemon);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+
+    .menu { display: flex; gap: 0.35rem; }
+
+    .menu a {
+      display: block;
+      padding: 0.45rem 0.95rem;
+      border-radius: 999px;
+      color: var(--putih);
+      font-weight: 500;
+      font-size: 0.98rem;
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .menu a:hover { background: var(--biru-tua); }
+
+    .menu a.aktif,
+    .menu a:focus-visible { background: var(--lemon); color: var(--tinta); }
+
+    /* Tombol menu mobile (tanpa JavaScript, memakai checkbox) */
+    .toggle-input { position: absolute; opacity: 0; pointer-events: none; }
+
+    .toggle-label {
+      display: none;
+      cursor: pointer;
+      width: 44px;
+      height: 44px;
+      border: 2px solid var(--putih);
+      border-radius: 10px;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .toggle-label span {
+      width: 22px;
+      height: 2.5px;
+      background: var(--putih);
+      border-radius: 2px;
+    }
+
+    .toggle-input:focus-visible + .toggle-label { outline: 3px solid var(--lemon); outline-offset: 3px; }
+
+    /* ---------- Layout umum ---------- */
+    section { padding: 4.5rem 1.25rem; }
+    .wadah { max-width: 1120px; margin: 0 auto; }
+
+    .judul-bagian { margin-bottom: 2.5rem; max-width: 34rem; }
+    .judul-bagian h2 { font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 800; }
+    .judul-bagian p { margin-top: 0.75rem; color: #44456f; }
+
+    /* ---------- Komponen jendela browser ---------- */
+    .jendela {
+      background: var(--putih);
+      border: var(--garis);
+      border-radius: 14px;
+      box-shadow: var(--bayangan);
+      overflow: hidden;
+    }
+
+    .bar-jendela {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.65rem 0.9rem;
+      background: var(--lilac);
+      border-bottom: var(--garis);
+    }
+
+    .titik { width: 12px; height: 12px; border-radius: 50%; border: 1.5px solid var(--tinta); flex: none; }
+    .titik.m { background: var(--merah); }
+    .titik.k { background: var(--kuning); }
+    .titik.h { background: var(--hijau); }
+
+    .alamat {
+      flex: 1;
+      min-width: 0;
+      margin-left: 0.5rem;
+      padding: 0.15rem 0.8rem;
+      background: var(--putih);
+      border: 1.5px solid var(--tinta);
+      border-radius: 999px;
+      font-size: 0.82rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .isi-jendela { padding: 1.75rem; }
+
+    /* ---------- Beranda ---------- */
+    #beranda { padding-top: 3.5rem; padding-bottom: 5rem; }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 2.5rem;
+      align-items: center;
+    }
+
+    .hero .isi-jendela { padding: 2.5rem 2.25rem 2.75rem; }
+
+    .sapaan { font-weight: 600; color: var(--biru); margin-bottom: 0.75rem; }
+
+    .hero h1 {
+      font-size: clamp(2.6rem, 7vw, 5rem);
+      font-weight: 800;
+      margin-bottom: 1.25rem;
+    }
+
+    .hero h1 .peran {
+      display: block;
+      margin-top: 0.4rem;
+      font-size: 0.42em;
+      font-weight: 500;
+      letter-spacing: 0;
+      color: #44456f;
+    }
+
+    .hero p.lead { max-width: 32rem; margin-bottom: 2rem; }
+
+    .tombol-grup { display: flex; flex-wrap: wrap; gap: 0.9rem; }
+
+    .tombol {
+      display: inline-block;
+      padding: 0.8rem 1.5rem;
+      border: var(--garis);
+      border-radius: 10px;
+      font-weight: 600;
+      text-decoration: none;
+      box-shadow: 4px 4px 0 var(--tinta);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .tombol:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--tinta); }
+    .tombol:active { transform: translate(4px, 4px); box-shadow: 0 0 0 var(--tinta); }
+
+    .tombol.utama { background: var(--lemon); }
+    .tombol.kedua { background: var(--putih); }
+
+    /* Kartu foto */
+    .kartu-foto {
+      position: relative;
+      transform: rotate(2.5deg);
+    }
+
+    .foto {
+      aspect-ratio: 4 / 5;
+      background: var(--biru);
+      display: grid;
+      place-items: center;
+      text-align: center;
+      color: var(--lemon);
+      font-family: var(--font-judul);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .foto::before {
+      content: "";
+      position: absolute;
+      width: 70%;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: var(--biru-tua);
+      bottom: -18%;
+      left: 15%;
+    }
+
+    .foto::after {
+      content: "";
+      position: absolute;
+      width: 34%;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: var(--lilac);
+      top: 18%;
+      left: 33%;
+    }
+
+    .foto span {
+      position: relative;
+      z-index: 2;
+      margin-top: 62%;
+      font-size: 1.1rem;
+      font-weight: 700;
+      background: var(--lemon);
+      color: var(--tinta);
+      padding: 0.3rem 0.8rem;
+      border: 2px solid var(--tinta);
+      border-radius: 8px;
+    }
+
+    .foto-profil {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  object-position: center top;
+}
+
+    .stiker {
+      position: absolute;
+      right: -14px;
+      bottom: 22px;
+      background: var(--lemon);
+      border: var(--garis);
+      border-radius: 10px;
+      padding: 0.35rem 0.8rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transform: rotate(-6deg);
+      box-shadow: 3px 3px 0 var(--tinta);
+    }
+
+    /* Satu-satunya animasi otomatis: alamat web "diketik" saat halaman dibuka */
+    .alamat.ketik {
+      width: 0;
+      flex: none;
+      animation: ketik 2.2s steps(30, end) 0.4s forwards;
+    }
+
+    @keyframes ketik { to { width: min(22rem, 100%); } }
+
+    /* ---------- Tentang ---------- */
+    .tentang-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    .data-diri dt { font-weight: 600; font-size: 0.9rem; color: var(--biru); }
+    .data-diri dd { margin-bottom: 0.9rem; padding-bottom: 0.9rem; border-bottom: 1.5px dashed #b9b7e8; }
+    .data-diri dd:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: 0; }
+
+    .tentang-teks p + p { margin-top: 1rem; }
+
+    .garis-waktu { margin-top: 1.5rem; border-left: 3px solid var(--biru); padding-left: 1.25rem; }
+    .garis-waktu li { position: relative; margin-bottom: 1.15rem; }
+    .garis-waktu li:last-child { margin-bottom: 0; }
+
+    .garis-waktu li::before {
+      content: "";
+      position: absolute;
+      left: calc(-1.25rem - 9.5px);
+      top: 0.45rem;
+      width: 14px;
+      height: 14px;
+      background: var(--lemon);
+      border: 2.5px solid var(--tinta);
+      border-radius: 50%;
+    }
+
+    .garis-waktu strong { display: block; font-family: var(--font-judul); font-size: 1.1rem; }
+    .garis-waktu small { color: #55568a; font-size: 0.92rem; }
+
+    /* ---------- Keahlian ---------- */
+    #keahlian { background: var(--biru); border-block: var(--garis); }
+    #keahlian .judul-bagian h2 { color: var(--lemon); }
+    #keahlian .judul-bagian p { color: #d9dbff; }
+
+    .keahlian-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.75rem;
+    }
+
+    .keahlian-grid .jendela { box-shadow: 6px 6px 0 var(--tinta); }
+    .keahlian-grid h3 { font-size: 1.35rem; margin-bottom: 1rem; }
+
+    .skill { margin-bottom: 1rem; }
+    .skill:last-child { margin-bottom: 0; }
+
+    .skill-baris { display: flex; justify-content: space-between; font-weight: 500; font-size: 0.95rem; margin-bottom: 0.3rem; }
+
+    .meter {
+      height: 14px;
+      background: var(--lilac);
+      border: 2px solid var(--tinta);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .meter i { display: block; height: 100%; background: var(--biru); border-right: 2px solid var(--tinta); }
+
+    .lencana { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.25rem; }
+
+    .lencana li {
+      padding: 0.2rem 0.75rem;
+      border: 2px solid var(--tinta);
+      border-radius: 999px;
+      background: var(--lemon);
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+
+    /* ---------- Proyek ---------- */
+    .proyek-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+    }
+
+    .proyek .jendela { height: 100%; display: flex; flex-direction: column; transition: transform 0.2s; }
+    .proyek:hover .jendela { transform: translateY(-4px); }
+
+    .cuplikan {
+      aspect-ratio: 16 / 10;
+      border-bottom: var(--garis);
+      display: grid;
+      place-items: center;
+      font-family: var(--font-judul);
+      font-weight: 800;
+      font-size: 1.6rem;
+      text-align: center;
+      padding: 1rem;
+    }
+
+    .proyek:nth-child(1) .cuplikan { background: var(--lemon); }
+    .proyek:nth-child(2) .cuplikan { background: var(--lilac); }
+    .proyek:nth-child(3) .cuplikan { background: #ffc9c4; }
+
+    .proyek .isi-jendela { flex: 1; display: flex; flex-direction: column; gap: 0.6rem; }
+    .proyek h3 { font-size: 1.3rem; }
+    .proyek p { font-size: 0.97rem; flex: 1; }
+    .proyek .tautan { font-weight: 600; text-decoration-thickness: 2px; text-underline-offset: 4px; }
+
+    /* ---------- Kontak ---------- */
+    #kontak { padding-bottom: 5.5rem; }
+
+    .kontak-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    .daftar-kontak li { padding: 0.8rem 0; border-bottom: 1.5px dashed #b9b7e8; }
+    .daftar-kontak li:first-child { padding-top: 0; }
+    .daftar-kontak li:last-child { border-bottom: 0; padding-bottom: 0; }
+    .daftar-kontak span { display: block; font-size: 0.9rem; font-weight: 600; color: var(--biru); }
+
+    .form label { display: block; font-weight: 600; font-size: 0.95rem; margin-bottom: 0.3rem; }
+
+    .form input,
+    .form textarea {
+      width: 100%;
+      padding: 0.7rem 0.9rem;
+      margin-bottom: 1.1rem;
+      font: inherit;
+      color: var(--tinta);
+      background: var(--kertas);
+      border: var(--garis);
+      border-radius: 10px;
+    }
+
+    .form textarea { min-height: 130px; resize: vertical; }
+    .form button { font: inherit; cursor: pointer; background: var(--lemon); }
+
+    /* ---------- Footer ---------- */
+    footer {
+      background: var(--tinta);
+      color: #d9dbff;
+      text-align: center;
+      padding: 1.75rem 1.25rem;
+      font-size: 0.95rem;
+    }
+
+    footer a { color: var(--lemon); }
+
+    /* ---------- Responsif ---------- */
+    @media (max-width: 900px) {
+      .hero-grid,
+      .tentang-grid,
+      .kontak-grid { grid-template-columns: 1fr; }
+      .keahlian-grid,
+      .proyek-grid { grid-template-columns: 1fr 1fr; }
+      .kartu-foto { max-width: 320px; margin: 0 auto; }
+    }
+
+    @media (max-width: 720px) {
+      .toggle-label { display: flex; }
+
+      .menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        gap: 0;
+        padding: 0.5rem 1.25rem 1rem;
+        background: var(--biru);
+        border-bottom: var(--garis);
+        display: none;
+      }
+
+      .toggle-input:checked ~ .menu { display: flex; }
+      .menu a { border-radius: 10px; padding: 0.75rem 0.9rem; }
+    }
+
+    @media (max-width: 600px) {
+      section { padding: 3.25rem 1rem; }
+      .keahlian-grid,
+      .proyek-grid { grid-template-columns: 1fr; }
+      .hero .isi-jendela { padding: 1.75rem 1.25rem 2rem; }
+      .alamat.ketik { animation-name: ketik-kecil; }
+      @keyframes ketik-kecil { to { width: 100%; } }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .alamat.ketik { animation: none; width: min(22rem, 100%); }
+      * { transition: none !important; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ===================== NAVIGASI (5 MENU) ===================== -->
+  <header class="navbar">
+    <nav class="navbar-isi" aria-label="Menu utama">
+      <a href="#beranda" class="logo">(Inisial Nama)</a>
+
+      <input type="checkbox" id="menu-toggle" class="toggle-input" aria-label="Buka menu">
+      <label for="menu-toggle" class="toggle-label" aria-hidden="true"><span></span><span></span><span></span></label>
+
+      <ul class="menu">
+        <li><a href="#beranda" class="aktif">Beranda</a></li>
+        <li><a href="#tentang">Tentang</a></li>
+        <li><a href="#keahlian">Keahlian</a></li>
+        <li><a href="#proyek">Proyek</a></li>
+        <li><a href="#kontak">Kontak</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- ===================== 1. BERANDA ===================== -->
+    <section id="beranda" class="hero">
+      <div class="wadah hero-grid">
+
+        <div class="jendela">
+          <div class="bar-jendela">
+            <span class="titik m"></span><span class="titik k"></span><span class="titik h"></span>
+            <span class="alamat ketik">https://(username).github.io</span>
+          </div>
+          <div class="isi-jendela">
+            <p class="sapaan">Halo, saya</p>
+            <h1>
+              (Adrian Franciscus Caferius Sidauruk)
+              <span class="peran">(Profesi / Peminatan, contoh: Web Designer &amp; Front-End Developer)</span>
+            </h1>
+            <p class="lead">
+              (Saya menyukai hal yang berkaitan dengan pemrograman, dan hal yang paling berkesan bagi saya adalah menganalisis sebuah masalah atau data.)
+            </p>
+            <div class="tombol-grup">
+              <a href="#proyek" class="tombol utama">Lihat proyek saya</a>
+              <a href="#kontak" class="tombol kedua">Hubungi saya</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="kartu-foto">
+          <div class="jendela">
+            <img src="foto.jpg" alt="Foto (Nama Lengkap)" class="foto-profil">
+          </div>
+          <div class="stiker">(Semester ganjil) &middot; (Sistem Informasi)</div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===================== 2. TENTANG ===================== -->
+    <section id="tentang">
+      <div class="wadah">
+        <div class="judul-bagian">
+          <h2>Tentang saya</h2>
+          <p>Identitas dan latar belakang singkat.</p>
+        </div>
+
+        <div class="tentang-grid">
+
+          <div class="jendela">
+            <div class="bar-jendela">
+              <span class="titik m"></span><span class="titik k"></span><span class="titik h"></span>
+              <span class="alamat">identitas.html</span>
+            </div>
+            <dl class="isi-jendela data-diri">
+              <dt>Nama lengkap</dt>
+              <dd>(Adrian Franciscus Caferius Sidauruk)</dd>
+              <dt>NIM</dt>
+              <dd>(123456789)</dd>
+              <dt>Kelas Reguler</dt>
+              <dd>A0215</dd>
+              <dt>Fakultas / Program studi</dt>
+              <dd>Fakultas Teknologi dan Informatika / (Sistem Informasi)</dd>
+              <dt>Kampus</dt>
+              <dd>(UNIBI), Bandung</dd>
+              <dt>Tempat, tanggal lahir</dt>
+              <dd>(Bandung), (5/10/2006)</dd>
+            </dl>
+          </div>
+
+          <div class="jendela">
+            <div class="bar-jendela">
+              <span class="titik m"></span><span class="titik k"></span><span class="titik h"></span>
+              <span class="alamat">cerita-singkat.html</span>
+            </div>
+            <div class="isi-jendela tentang-teks">
+              <p>(Saya tertarik dengan desain web karena tau bagaimana proses pembuatan sebuah web)</p>
+              <p>(Minaat saya dalam sebenarnya dalam menganalisis sebuah system atau data, dan mengatasi masalah tersebut.)</p>
+
+              <ul class="garis-waktu">
+                <li>
+                  <strong>(UNIBI)</strong>
+                  <small>(2025) - sekarang &middot; (Sistem Informasi)</small>
+                </li>
+                <li>
+                  <strong>(SMAK Dago)</strong>
+                  <small>(2022) - (2025) &middot; (IPS)</small>
+                </li>
+                <li>
+                  <strong>(OSIS, HIMASI)</strong>
+                  <small>(2024-2025, 2026-2027) &middot; (Bela negara, Kastrat)</small>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 3. KEAHLIAN ===================== -->
+    <section id="keahlian">
+      <div class="wadah">
+        <div class="judul-bagian">
+          <h2>Keahlian</h2>
+          <p>Kemampuan yang saya pakai untuk membangun halaman web.</p>
+        </div>
+
+        <div class="keahlian-grid">
+
+          <article class="jendela">
+            <div class="bar-jendela">
+              <span class="titik m"></span><span class="titik k"></span><span class="titik h"></span>
+              <span class="alamat">front-end.css</span>
+            </div>
+            <div class="isi-jendela">
+              <h3>Front-end</h3>
+              <div class="skill">
+                <div class="skill-baris"><span>HTML</span><span>(90%)</span></div>
+                <div class="meter"><i style="width: 90%"></i></div>
+              </div>
+              <div class="skill">
+                <div class="skill-baris"><span>CSS</span><span>(85%)</span></div>
+                <div class="meter"><i style="width: 85%"></i></div>
+              </div>
+              <div class="skill">
+                <div class="skill-baris"><span>Layout responsif</span><span>(80%)</span></div>
+                <div class="meter"><i style="width: 80%"></i></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="jendela">
+            <div class="bar-jendela">
+              <span class="titik m"></span><span class="titik k"></span><span class="titik h"></span>
+              <span class="alamat">desain.fig</span>
+            </div>
+            <div class="isi-jendela">
+              <h3>Desain</h3>
+              <div class="skill">
+                <div class="skill-baris"><span>UI / UX dasar</span><span>(75%)</span></div>
+                <div class="meter"><i style="width: 75%"></i></div>
+              </div>
+              <div class="skill">
+                <div class="skill-baris"><span>Tipografi &amp; warna</span><span>(80%)</span></div>
+                <div class="meter"><i style="width: 80%"></i></div>
+              </div>
+              <div class="skill">
+                <div class="skill-baris"><span>Wireframe</span><span>(70%)</span></div>
+                <div class="meter"><i style="width: 70%"></i></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="jendela">
+            <div class="bar-jendela">
+              <span class="titik m"></span><span class="titik k"></span><span class="titik h"></span>
+              <span class="alamat">peralatan.txt</span>
+            </div>
+            <div class="isi-jendela">
+              <h3>Peralatan</h3>
+              <p>Aplikasi yang biasa saya gunakan sehari-hari:</p>
+              <ul class="lencana">
+                <li>(VS Code)</li>
+                <li>(Git &amp; GitHub)</li>
+                <li>(Figma)</li>
+                <li>(Chrome DevTools)</li>
+                <li>(Tool Lain)</li>
+              </ul>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 4. PROYEK ===================== -->
+    <section id="proyek">
+      <div class="wadah">
+        <div class="judul-bagian">
+          <h2>Proyek</h2>
+          <p>Tiga hasil kerja yang paling mewakili kemampuan saya.</p>
+        </div>
+
+        <div class="proyek-grid">
+
+          <article class="proyek">
+            <div class="jendela">
+              <div class="cuplikan">(Judul Proyek 1)</div>
+              <div class="isi-jendela">
+                <h3>(Judul Proyek 1)</h3>
+                <p>(Jelaskan proyek ini: tujuan, peran Anda, dan teknologi yang dipakai.)</p>
+                <a href="(link-proyek-1)" class="tautan">Buka proyek</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="proyek">
+            <div class="jendela">
+              <div class="cuplikan">(Judul Proyek 2)</div>
+              <div class="isi-jendela">
+                <h3>(Judul Proyek 2)</h3>
+                <p>(Jelaskan proyek ini: tujuan, peran Anda, dan teknologi yang dipakai.)</p>
+                <a href="(link-proyek-2)" class="tautan">Buka proyek</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="proyek">
+            <div class="jendela">
+              <div class="cuplikan">(Judul Proyek 3)</div>
+              <div class="isi-jendela">
+                <h3>(Judul Proyek 3)</h3>
+                <p>(Jelaskan proyek ini: tujuan, peran Anda, dan teknologi yang dipakai.)</p>
+                <a href="(link-proyek-3)" class="tautan">Buka proyek</a>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 5. KONTAK ===================== -->
+    <section id="kontak">
+      <div class="wadah">
+        <div class="judul-bagian">
+          <h2>Kontak</h2>
+          <p>Ada pertanyaan atau ajakan kerja sama? Kirim pesan lewat formulir atau hubungi langsung.</p>
+        </div>
+
+        <div class="kontak-grid">
+
+          <div class="jendela">
+            <div class="bar-jendela">
+              <span class="titik m"></span><span class="titik k"></span><span class="titik h"></span>
+              <span class="alamat">kontak.html</span>
+            </div>
+            <ul class="isi-jendela daftar-kontak">
+              <li><span>Email</span>(adrianfcs1579@gmail.com)</li>
+              <li><span>WhatsApp</span>(0890-9000-1111)</li>
+              <li><span>Instagram</span>(@adrian)</li>
+              <li><span>GitHub</span>(github.com/)</li>
+              <li><span>Alamat</span>(Alamat / Kota), Bandung</li>
+            </ul>
+          </div>
+
+          <div class="jendela">
+            <div class="bar-jendela">
+              <span class="titik m"></span><span class="titik k"></span><span class="titik h"></span>
+              <span class="alamat">pesan-baru.html</span>
+            </div>
+            <!-- Ganti (email@contoh.com) dengan email Anda. Formulir akan membuka aplikasi email pengunjung. -->
+            <form class="isi-jendela form" action="mailto:(email@contoh.com)" method="post" enctype="text/plain">
+              <label for="nama">Nama</label>
+              <input type="text" id="nama" name="nama" placeholder="Nama Anda" required>
+
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" placeholder="email@anda.com" required>
+
+              <label for="pesan">Pesan</label>
+              <textarea id="pesan" name="pesan" placeholder="Tulis pesan Anda di sini" required></textarea>
+
+              <button type="submit" class="tombol utama">Kirim pesan</button>
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>&copy; 2026 (Nama Lengkap) &middot; (NIM) &middot; Kelas A0215 &middot; UTS Desain Web, Fakultas Teknologi dan Informatika</p>
+  </footer>
+
+</body>
+</html>
